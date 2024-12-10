@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Home from "../src/components/pages/Home";
+import Home from "@/components/pages/Home";
 
 const appEl = document.querySelector("#app");
 const root = createRoot(appEl);
