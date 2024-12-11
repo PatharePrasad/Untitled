@@ -25,9 +25,11 @@ function Form() {
   // @desc This function is invoked by clicking on checkbox
   // @desc Logs the value
   const handleCheckbox = (value, checked) => {
+    //console.log(value, checked)
     setSelectedServices((prevState) => {
-      const updatedServices = [...prevState];
-      updatedServices.push(value);
+      const updatedServices = checked
+        ? [...prevState, value]
+        : prevState.filter((service) => service !== value);
       return updatedServices;
     });
   };
@@ -90,7 +92,7 @@ function Form() {
           type="submit"
           className="flex items-center justify-center gap-2 rounded bg-zinc-950 p-2 text-white"
         >
-          Let's get started{" "}
+          Let's get started!{" "}
           <RiSparklingFill className="text-lime-500" size={20} />
         </button>
       </form>
