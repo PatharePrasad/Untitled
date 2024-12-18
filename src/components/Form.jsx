@@ -27,14 +27,42 @@ function Form() {
     },
   });
 
+  const handleFormSubmit = async (data) => {
+    try {
+      const res = await fetch("https://vector.profanity.dev", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: data.message }),
+      });
+      const resData = await res.json();
+      if (resData.isProfanity) return console.log("Contains some bad words");
+
+      const formData = new FormData();
+      formData.append(config.fullname, data.fullname);
+      formData.append(config.email, data.email);
+      formData.append(config.message, data.message);
+      formData.append(config.services, data.services);
+
+      fetch(config.submitURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData,
+      }).then(() => {
+        console.log("Form submit hogya!");
+      });
+    } catch (err) {
+      console.error("Error occured", err);
+    }
+  };
+
   return (
     <>
       <Intro />
       <form
         className="flex flex-col gap-1"
-        onSubmit={handleSubmit((data) => {
-          console.log(data);
-        })}
+        onSubmit={handleSubmit(handleFormSubmit)}
       >
         {/* Inputs */}
         <input
@@ -43,7 +71,7 @@ function Form() {
             required: "Please enter your full name",
             minLength: {
               value: 4,
-              message: "Kaafi chota naam hai tumhara",
+              message: "Must be of four or more characters",
             },
           })}
           id="fullname"
@@ -60,7 +88,7 @@ function Form() {
             required: "Please enter your email!",
             pattern: {
               value: /[\w]*@*[a-z]*\.*[\w]{5,}(\.)*(com)*(@gmail\.com)/,
-              message: "Temp mail ke chakkar mein mat reh, gmail daal de",
+              message: "Only gmail is allowed.",
             },
           })}
           id="email"
@@ -72,10 +100,10 @@ function Form() {
         <input
           type="text"
           {...register("message", {
-            required: "Enter a message dear!",
+            required: "Please enter a message!",
             minLength: {
               value: 5,
-              message: "Jada chota nhi hogya?",
+              message: "Make it a bit more descriptive.",
             },
           })}
           id="message"
