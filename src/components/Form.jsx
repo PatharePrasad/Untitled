@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { RiSparklingFill } from "react-icons/ri";
 import Intro from "@/components/Intro";
-import config from "../utils/config";
-import { data } from "autoprefixer";
+import config from "@/utils/config";
+import spamDetect from "../utils/spamDetect";
 
 const services = [
   "Website Design",
@@ -28,17 +28,11 @@ function Form() {
   });
 
   const handleFormSubmit = async (data) => {
-    try {
-      const res = await fetch("https://vector.profanity.dev", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: data.message }),
-      });
-      const resData = await res.json();
-      if (resData.isProfanity) return console.log("Contains some bad words");
+    const spamCheck = await spamDetect(data.message);
 
+    if (spamCheck.isProfanity) {
+      console.log("Shi se fill karo");
+    } else {
       const formData = new FormData();
       formData.append(config.fullname, data.fullname);
       formData.append(config.email, data.email);
@@ -52,8 +46,6 @@ function Form() {
       }).then(() => {
         console.log("Form submit hogya!");
       });
-    } catch (err) {
-      console.error("Error occured", err);
     }
   };
 
